@@ -1,9 +1,10 @@
-import { X, Leaf, Clock3, Star } from 'lucide-react';
+import { X, Leaf, Clock3, Star, MessageSquare } from 'lucide-react';
 import { PRICE_LEVEL_LABEL, PRICE_LEVEL_DESCRIPTION } from '../utils/format';
 import { countActiveFilters } from '../hooks/useFilteredRestaurants';
 import styles from './FilterPanel.module.css';
 
 const RATING_STEPS = [4.5, 4, 3.5, 3];
+const REVIEW_STEPS = [10, 25, 50, 100];
 
 function toggleInArray(arr, value) {
   return arr.includes(value) ? arr.filter((v) => v !== value) : [...arr, value];
@@ -38,6 +39,7 @@ export default function FilterPanel({ filters, setFilters, facets, resultCount, 
       areas: [],
       priceLevels: [],
       minRating: 0,
+      minReviews: 0,
       serviceOptions: [],
       popularFor: [],
       vegOnly: false,
@@ -95,6 +97,21 @@ export default function FilterPanel({ filters, setFilters, facets, resultCount, 
               >
                 <Star size={12} fill="currentColor" />
                 {r}+
+              </button>
+            ))}
+          </div>
+        </Section>
+
+        <Section title="Reviews">
+          <div className={styles.ratingRow}>
+            {REVIEW_STEPS.map((n) => (
+              <button
+                key={n}
+                className={`${styles.ratingBtn} ${filters.minReviews === n ? styles.ratingBtnActive : ''}`}
+                onClick={() => update({ minReviews: filters.minReviews === n ? 0 : n })}
+              >
+                <MessageSquare size={12} />
+                {n}+
               </button>
             ))}
           </div>

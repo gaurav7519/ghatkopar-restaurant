@@ -7,6 +7,7 @@ export const DEFAULT_FILTERS = {
   areas: [],
   priceLevels: [],
   minRating: 0,
+  minReviews: 0,
   serviceOptions: [],
   popularFor: [],
   vegOnly: false,
@@ -23,6 +24,7 @@ export function countActiveFilters(filters) {
   count += filters.serviceOptions.length;
   count += filters.popularFor.length;
   if (filters.minRating > 0) count += 1;
+  if (filters.minReviews > 0) count += 1;
   if (filters.vegOnly) count += 1;
   if (filters.openNow) count += 1;
   return count;
@@ -69,6 +71,7 @@ export function useFilteredRestaurants(restaurants, filters) {
       if (filters.areas.length && !filters.areas.includes(r.area)) return false;
       if (filters.priceLevels.length && !filters.priceLevels.includes(r.priceLevel)) return false;
       if (filters.minRating > 0 && (r.rating ?? 0) < filters.minRating) return false;
+      if (filters.minReviews > 0 && r.reviewsCount < filters.minReviews) return false;
       if (filters.serviceOptions.length && !filters.serviceOptions.every((s) => r.serviceOptions.includes(s))) return false;
       if (filters.popularFor.length && !filters.popularFor.some((p) => r.popularFor.includes(p))) return false;
       if (filters.vegOnly && !r.isVeg) return false;
