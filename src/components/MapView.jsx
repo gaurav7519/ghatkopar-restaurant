@@ -45,15 +45,58 @@ function createClusterIcon(cluster) {
   });
 }
 
-function MapController({ activeRestaurant }) {
+// Keeps the map centered on the active restaurant, coordinated with resize/visibility:
+// a hidden map (e.g. behind the mobile list view) has zero size, and asking Leaflet to
+// fly/pan a zero-size map produces NaN coordinates that crash the whole app. So any
+// navigation requested while hidden is deferred until the container actually has size.
+function MapViewSync({ activeRestaurant }) {
   const map = useMap();
+  const pendingRef = useRef(null);
+
+  const isVisible = useCallback(() => {
+    const size = map.getSize();
+    return size.x > 0 && size.y > 0;
+  }, [map]);
+
+  const goTo = useCallback(
+    (restaurant, animate) => {
+      if (!restaurant) return;
+      if (!isVisible()) {
+        pendingRef.current = restaurant;
+        return;
+      }
+      pendingRef.current = null;
+      try {
+        const target = [restaurant.lat, restaurant.lng];
+        const zoom = Math.max(map.getZoom(), 15);
+        if (animate) {
+          map.flyTo(target, zoom, { duration: 0.6 });
+        } else {
+          map.setView(target, zoom, { animate: false });
+        }
+      } catch {
+        // Ignore: a stray Leaflet projection error should never take down the app.
+      }
+    },
+    [map, isVisible]
+  );
+
   useEffect(() => {
-    if (activeRestaurant) {
-      map.flyTo([activeRestaurant.lat, activeRestaurant.lng], Math.max(map.getZoom(), 15), {
-        duration: 0.6,
-      });
-    }
-  }, [activeRestaurant, map]);
+    goTo(activeRestaurant, true);
+  }, [activeRestaurant, goTo]);
+
+  useEffect(() => {
+    const container = map.getContainer();
+    const observer = new ResizeObserver(() => {
+      map.invalidateSize();
+      if (pendingRef.current) {
+        goTo(pendingRef.current, false);
+      }
+    });
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, [map, goTo]);
+
   return null;
 }
 
@@ -124,17 +167,6 @@ function LabelDeclutter({ restaurants, onVisibleChange }) {
   return null;
 }
 
-function MapResizeHandler() {
-  const map = useMap();
-  useEffect(() => {
-    const container = map.getContainer();
-    const observer = new ResizeObserver(() => map.invalidateSize());
-    observer.observe(container);
-    return () => observer.disconnect();
-  }, [map]);
-  return null;
-}
-
 export default function MapView({ restaurants, activeId, hoveredId, onSelect, onHover }) {
   const [visibleLabelIds, setVisibleLabelIds] = useState(() => new Set(restaurants.map((r) => r.id)));
   const activeRestaurant = useMemo(() => restaurants.find((r) => r.id === activeId) || null, [restaurants, activeId]);
@@ -148,8 +180,7 @@ export default function MapView({ restaurants, activeId, hoveredId, onSelect, on
         maxZoom={19}
       />
 
-      <MapController activeRestaurant={activeRestaurant} />
-      <MapResizeHandler />
+      <MapViewSync activeRestaurant={activeRestaurant} />
       <LabelDeclutter restaurants={restaurants} onVisibleChange={setVisibleLabelIds} />
 
       <MarkerClusterGroup

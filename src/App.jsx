@@ -4,6 +4,7 @@ import Header from './components/Header';
 import FilterPanel from './components/FilterPanel';
 import RestaurantList from './components/RestaurantList';
 import MapView from './components/MapView';
+import MapErrorBoundary from './components/MapErrorBoundary';
 import RestaurantDetail from './components/RestaurantDetail';
 import rawRestaurants from './data/restaurants.json';
 import { buildFacets } from './utils/facets';
@@ -59,13 +60,15 @@ function App() {
             />
           </div>
           <div className={styles.mapPane}>
-            <MapView
-              restaurants={filtered}
-              activeId={activeId ?? hoveredId}
-              hoveredId={hoveredId}
-              onSelect={handleSelect}
-              onHover={setHoveredId}
-            />
+            <MapErrorBoundary resetKey={filters}>
+              <MapView
+                restaurants={filtered}
+                activeId={activeId ?? hoveredId}
+                hoveredId={hoveredId}
+                onSelect={handleSelect}
+                onHover={setHoveredId}
+              />
+            </MapErrorBoundary>
           </div>
         </div>
       </div>

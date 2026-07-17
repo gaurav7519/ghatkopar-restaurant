@@ -1,0 +1,25 @@
+.fallback {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  padding: 32px;
+  color: var(--text-muted);
+  background: var(--bg-elevated);
+}
+
+.fallback p {
+  font-family: var(--font-display);
+  font-size: 16px;
+  color: var(--text-primary);
+  margin: 4px 0 0;
+}
+
+.fallback span {
+  font-size: 12.5px;
+  max-width: 260px;
+}
