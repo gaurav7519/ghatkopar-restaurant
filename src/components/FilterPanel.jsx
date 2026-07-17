@@ -4,7 +4,7 @@ import { countActiveFilters } from '../hooks/useFilteredRestaurants';
 import styles from './FilterPanel.module.css';
 
 const RATING_STEPS = [4.5, 4, 3.5, 3];
-const REVIEW_STEPS = [10, 25, 50, 100];
+const REVIEW_STEPS = [5, 50, 100, 500];
 
 function toggleInArray(arr, value) {
   return arr.includes(value) ? arr.filter((v) => v !== value) : [...arr, value];
