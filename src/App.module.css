@@ -1,0 +1,155 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.shell {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+}
+
+.sidebar {
+  display: none;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  min-height: 0;
+}
+
+.listPane {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  padding: 18px 20px 20px;
+}
+
+.mapPane {
+  display: none;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Mobile: view toggle decides which pane shows */
+.content[data-view='map'] .listPane {
+  display: none;
+}
+
+.content[data-view='map'] .mapPane {
+  display: block;
+}
+
+.content[data-view='list'] .mapPane {
+  display: none;
+}
+
+.filterOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 800;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.filterOverlayBackdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 6, 5, 0.6);
+  backdrop-filter: blur(2px);
+}
+
+.filterOverlayPanel {
+  position: relative;
+  width: min(360px, 88vw);
+  height: 100%;
+  box-shadow: -16px 0 40px rgba(0, 0, 0, 0.5);
+  border-left: 1px solid var(--border-strong);
+  animation: slideIn 0.22s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.floatingToggle {
+  position: fixed;
+  left: 50%;
+  bottom: max(20px, env(safe-area-inset-bottom, 0px) + 12px);
+  transform: translateX(-50%);
+  z-index: 600;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: linear-gradient(135deg, var(--accent), var(--terracotta));
+  color: var(--accent-contrast);
+  border: none;
+  border-radius: 999px;
+  padding: 12px 20px;
+  font-size: 13.5px;
+  font-weight: 700;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+}
+
+.floatingToggle:active {
+  transform: translateX(-50%) scale(0.96);
+}
+
+/* Tablet and up: permanent sidebar, panes still toggle via view mode */
+@media (min-width: 900px) {
+  .floatingToggle {
+    display: none;
+  }
+
+
+  .sidebar {
+    display: block;
+    width: 280px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .filterOverlay {
+    display: none;
+  }
+
+  .listPane {
+    padding: 20px 22px 24px;
+  }
+}
+
+/* Large desktop: show list + map side by side regardless of view toggle */
+@media (min-width: 1280px) {
+  .content[data-view='list'] .mapPane,
+  .content[data-view='map'] .mapPane {
+    display: block;
+  }
+
+  .content[data-view='list'] .listPane,
+  .content[data-view='map'] .listPane {
+    display: block;
+  }
+
+  .mapPane {
+    width: 44%;
+    flex: none;
+    border-left: 1px solid var(--border);
+  }
+
+  .listPane {
+    flex: 1;
+  }
+}

@@ -1,0 +1,42 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 9px 3px 7px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.open {
+  color: var(--success);
+  background: var(--success-soft);
+}
+
+.open .dot {
+  background: var(--success);
+  box-shadow: 0 0 0 3px var(--success-soft);
+}
+
+.closed {
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+
+.closed .dot {
+  background: var(--danger);
+  box-shadow: 0 0 0 3px var(--danger-soft);
+}
+
+.hours {
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-left: 1px;
+}

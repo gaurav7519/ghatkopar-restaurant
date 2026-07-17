@@ -1,0 +1,35 @@
+.stars {
+  display: inline-flex;
+  gap: 1px;
+}
+
+.starWrap {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.starBase,
+.starFill {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.starBase {
+  color: var(--border-strong);
+}
+
+.starFillClip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  overflow: hidden;
+  display: block;
+}
+
+.starFill {
+  color: var(--accent);
+  fill: var(--accent);
+}
